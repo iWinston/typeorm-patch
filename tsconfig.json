@@ -14,12 +14,6 @@
     "target": "es5",
     "sourceMap": true,
     "outDir": "dist",
-    "baseUrl": ".",
-    "paths": {
-        "typeorm-copy": [
-          "typeorm"
-        ]
-    }
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "test/**/*.ts", "dist", "temp"]

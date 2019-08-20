@@ -1,6 +1,6 @@
 {
   "name": "typeorm-plus",
-  "private": true,
+  "private": false,
   "version": "0.0.25",
   "description": "Add extra features to TypeORM",
   "main": "dist/index.js",
@@ -47,5 +47,5 @@
   "homepage": "https://github.com/iWinston/typeorm-plus#readme",
   "peerDependencies": {
     "typeorm": ">= 0.2.8"
-  }
+  },
 }

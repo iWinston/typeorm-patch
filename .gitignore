@@ -9,3 +9,4 @@ dist
 compiled
 *.tgz
 docs
+yarn.lock
