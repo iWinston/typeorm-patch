@@ -1,7 +1,7 @@
 {
   "name": "typeorm-plus",
   "private": false,
-  "version": "0.0.28",
+  "version": "0.0.31",
   "description": "Add extra features to TypeORM",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
@@ -30,16 +30,16 @@
   "engines": {
     "node": ">=8.0.0"
   },
-  "dependencies": {},
+  "dependencies": {
+    "typeorm": "^0.2.8"
+  },
   "devDependencies": {
-    "@types/jest": "^23.3.2",
+    "typescript": "^3.0.3",
     "prettier": "^1.14.3",
     "ts-node": "^7.0.1",
     "tslint": "^5.11.0",
     "tslint-config-prettier": "^1.15.0",
-    "typedoc": "^0.12.0",
-    "typeorm": "^0.2.8",
-    "typescript": "^3.0.3"
+    "@types/jest": "^23.3.2"
   },
   "bugs": {
     "url": "https://github.com/iWinston/typeorm-plus/issues"
