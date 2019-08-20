@@ -9,21 +9,18 @@ import {
 } from 'typeorm'
 import { DeepPartial, InsertResult } from 'typeorm'
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity'
-import { SelectQueryBuilderPlus } from '../query-builder/SelectQueryBuilderPlus'
-import { FindManyPlusOptions } from './FindManyPlusOptions'
-import { FindOnePlusOptions } from './FindOnePlusOptions'
+import { SelectQueryBuilderPlus as SelectQueryBuilder } from '../query-builder/SelectQueryBuilderPlus'
+import { FindManyPlusOptions as FindManyOptions } from './FindManyPlusOptions'
+import { FindOnePlusOptions as FindOneOptions } from './FindOnePlusOptions'
 import { FindOptionsUtils } from './FindOptionsUtils'
-import { RemovePlusOptions } from './RemovePlusOptions'
-import { SavePlusOptions } from './SavePlusOptions'
+import { RemovePlusOptions as RemoveOptions } from './RemovePlusOptions'
+import { SavePlusOptions as SaveOptions } from './SavePlusOptions'
 
 export class RepositoryPlus<Entity extends ObjectLiteral> extends Repository<Entity> {
   /**
    * Creates a new query builder that can be used to build a sql query.
    */
-  public createQueryBuilder(
-    alias?: string,
-    queryRunner?: QueryRunner
-  ): SelectQueryBuilderPlus<Entity> {
+  public createQueryBuilder(alias?: string, queryRunner?: QueryRunner): SelectQueryBuilder<Entity> {
     return this.manager.createQueryBuilder<Entity>(
       this.metadata.target as any,
       alias || this.metadata.targetName,
@@ -37,7 +34,7 @@ export class RepositoryPlus<Entity extends ObjectLiteral> extends Repository<Ent
    */
   public save<T extends DeepPartial<Entity>>(
     entities: T[],
-    options: SavePlusOptions & { reload: false }
+    options: SaveOptions & { reload: false }
   ): Promise<T[]>
 
   /**
@@ -46,7 +43,7 @@ export class RepositoryPlus<Entity extends ObjectLiteral> extends Repository<Ent
    */
   public save<T extends DeepPartial<Entity>>(
     entities: T[],
-    options?: SavePlusOptions
+    options?: SaveOptions
   ): Promise<Array<T & Entity>>
 
   /**
@@ -55,23 +52,20 @@ export class RepositoryPlus<Entity extends ObjectLiteral> extends Repository<Ent
    */
   public save<T extends DeepPartial<Entity>>(
     entity: T,
-    options: SavePlusOptions & { reload: false }
+    options: SaveOptions & { reload: false }
   ): Promise<T>
 
   /**
    * Saves a given entity in the database.
    * If entity does not exist in the database then inserts, otherwise updates.
    */
-  public save<T extends DeepPartial<Entity>>(
-    entity: T,
-    options?: SavePlusOptions
-  ): Promise<T & Entity>
+  public save<T extends DeepPartial<Entity>>(entity: T, options?: SaveOptions): Promise<T & Entity>
   /**
    * Saves one or many given entities.
    */
   public async save<T extends DeepPartial<Entity>>(
     entityOrEntities: T | T[],
-    options?: SavePlusOptions
+    options?: SaveOptions
   ): Promise<T | T[]> {
     await this.checkUnique(entityOrEntities, options)
     return this.manager.save<T>(this.metadata.target as any, entityOrEntities as any, options)
@@ -80,19 +74,19 @@ export class RepositoryPlus<Entity extends ObjectLiteral> extends Repository<Ent
   /**
    * Removes a given entities from the database.
    */
-  public remove(entities: Entity[], options?: RemovePlusOptions): Promise<Entity[]>
+  public remove(entities: Entity[], options?: RemoveOptions): Promise<Entity[]>
 
   /**
    * Removes a given entity from the database.
    */
-  public remove(entity: Entity, options?: RemovePlusOptions): Promise<Entity>
+  public remove(entity: Entity, options?: RemoveOptions): Promise<Entity>
 
   /**
    * Removes one or many given entities.
    */
   public remove(
     entityOrEntities: Entity | Entity[],
-    options?: RemovePlusOptions
+    options?: RemoveOptions
   ): Promise<Entity | Entity[]> {
     if (options && options.soft) {
       return this.save(
@@ -114,7 +108,7 @@ export class RepositoryPlus<Entity extends ObjectLiteral> extends Repository<Ent
    */
   public async insert(
     entity: QueryDeepPartialEntity<Entity> | (Array<QueryDeepPartialEntity<Entity>>),
-    options?: SavePlusOptions
+    options?: SaveOptions
   ): Promise<InsertResult> {
     await this.checkUnique(entity, options)
     return this.manager.insert(this.metadata.target as any, entity)
@@ -138,7 +132,7 @@ export class RepositoryPlus<Entity extends ObjectLiteral> extends Repository<Ent
       | ObjectID[]
       | FindConditions<Entity>,
     partialEntity: QueryDeepPartialEntity<Entity>,
-    options?: SavePlusOptions
+    options?: SaveOptions
   ): Promise<UpdateResult> {
     await this.checkUnique(partialEntity, options)
     return this.manager.update(this.metadata.target as any, criteria as any, partialEntity)
@@ -161,7 +155,7 @@ export class RepositoryPlus<Entity extends ObjectLiteral> extends Repository<Ent
       | ObjectID
       | ObjectID[]
       | FindConditions<Entity>,
-    options?: RemovePlusOptions
+    options?: RemoveOptions
   ): Promise<DeleteResult | UpdateResult> {
     let result: DeleteResult | UpdateResult
     if (options && options.soft) {
@@ -177,7 +171,7 @@ export class RepositoryPlus<Entity extends ObjectLiteral> extends Repository<Ent
   /**
    * Counts entities that match given options.
    */
-  public count(options?: FindManyPlusOptions<Entity>): Promise<number>
+  public count(options?: FindManyOptions<Entity>): Promise<number>
 
   /**
    * Counts entities that match given conditions.
@@ -188,16 +182,16 @@ export class RepositoryPlus<Entity extends ObjectLiteral> extends Repository<Ent
    * Counts entities that match given find options or conditions.
    */
   public count(
-    optionsOrConditions?: FindManyPlusOptions<Entity> | FindConditions<Entity>
+    optionsOrConditions?: FindManyOptions<Entity> | FindConditions<Entity>
   ): Promise<number> {
-    optionsOrConditions = this.addScope(optionsOrConditions as FindManyPlusOptions<Entity>)
+    optionsOrConditions = this.addScope(optionsOrConditions as FindManyOptions<Entity>)
     return this.manager.count(this.metadata.target as any, optionsOrConditions as any)
   }
 
   /**
    * Finds entities that match given options.
    */
-  public find(options?: FindManyPlusOptions<Entity>): Promise<Entity[]>
+  public find(options?: FindManyOptions<Entity>): Promise<Entity[]>
 
   /**
    * Finds entities that match given conditions.
@@ -208,12 +202,12 @@ export class RepositoryPlus<Entity extends ObjectLiteral> extends Repository<Ent
    * Finds entities that match given find options or conditions.
    */
   public find(
-    optionsOrConditions?: FindManyPlusOptions<Entity> | FindConditions<Entity>
+    optionsOrConditions?: FindManyOptions<Entity> | FindConditions<Entity>
   ): Promise<Entity[]> {
-    optionsOrConditions = this.addScope(optionsOrConditions as FindManyPlusOptions<Entity>)
+    optionsOrConditions = this.addScope(optionsOrConditions as FindManyOptions<Entity>)
     return this.manager.find(
       this.metadata.target as any,
-      optionsOrConditions as FindManyPlusOptions<Entity>
+      optionsOrConditions as FindManyOptions<Entity>
     )
   }
 
@@ -222,7 +216,7 @@ export class RepositoryPlus<Entity extends ObjectLiteral> extends Repository<Ent
    * Also counts all entities that match given conditions,
    * but ignores pagination settings (from and take options).
    */
-  public findAndCount(options?: FindManyPlusOptions<Entity>): Promise<[Entity[], number]>
+  public findAndCount(options?: FindManyOptions<Entity>): Promise<[Entity[], number]>
 
   /**
    * Finds entities that match given conditions.
@@ -237,9 +231,9 @@ export class RepositoryPlus<Entity extends ObjectLiteral> extends Repository<Ent
    * but ignores pagination settings (from and take options).
    */
   public findAndCount(
-    optionsOrConditions?: FindManyPlusOptions<Entity> | FindConditions<Entity>
+    optionsOrConditions?: FindManyOptions<Entity> | FindConditions<Entity>
   ): Promise<[Entity[], number]> {
-    optionsOrConditions = this.addScope(optionsOrConditions as FindManyPlusOptions<Entity>)
+    optionsOrConditions = this.addScope(optionsOrConditions as FindManyOptions<Entity>)
     if (optionsOrConditions && optionsOrConditions.current && optionsOrConditions.take) {
       optionsOrConditions.take = optionsOrConditions.size
       optionsOrConditions.skip =
@@ -247,7 +241,7 @@ export class RepositoryPlus<Entity extends ObjectLiteral> extends Repository<Ent
     }
     return this.manager.findAndCount(
       this.metadata.target as any,
-      optionsOrConditions as FindManyPlusOptions<Entity>
+      optionsOrConditions as FindManyOptions<Entity>
     )
   }
 
@@ -256,20 +250,20 @@ export class RepositoryPlus<Entity extends ObjectLiteral> extends Repository<Ent
    */
   public findOne(
     id?: string | number | Date | ObjectID,
-    options?: FindOnePlusOptions<Entity>
+    options?: FindOneOptions<Entity>
   ): Promise<Entity | undefined>
 
   /**
    * Finds first entity that matches given options.
    */
-  public findOne(options?: FindOnePlusOptions<Entity>): Promise<Entity | undefined>
+  public findOne(options?: FindOneOptions<Entity>): Promise<Entity | undefined>
 
   /**
    * Finds first entity that matches given conditions.
    */
   public findOne(
     conditions?: FindConditions<Entity>,
-    options?: FindOnePlusOptions<Entity>
+    options?: FindOneOptions<Entity>
   ): Promise<Entity | undefined>
 
   /**
@@ -281,13 +275,13 @@ export class RepositoryPlus<Entity extends ObjectLiteral> extends Repository<Ent
       | number
       | Date
       | ObjectID
-      | FindOnePlusOptions<Entity>
+      | FindOneOptions<Entity>
       | FindConditions<Entity>,
-    maybeOptions?: FindOnePlusOptions<Entity>
+    maybeOptions?: FindOneOptions<Entity>
   ): Promise<Entity | undefined> {
-    optionsOrConditions = this.addScope(optionsOrConditions as FindManyPlusOptions<Entity>)
+    optionsOrConditions = this.addScope(optionsOrConditions as FindManyOptions<Entity>)
     if (maybeOptions) {
-      optionsOrConditions = this.addScope(maybeOptions as FindOnePlusOptions<Entity>)
+      optionsOrConditions = this.addScope(maybeOptions as FindOneOptions<Entity>)
     }
     return this.manager.findOne(
       this.metadata.target as any,
@@ -301,20 +295,20 @@ export class RepositoryPlus<Entity extends ObjectLiteral> extends Repository<Ent
    */
   public findOneOrFail(
     id?: string | number | Date | ObjectID,
-    options?: FindOnePlusOptions<Entity>
+    options?: FindOneOptions<Entity>
   ): Promise<Entity>
 
   /**
    * Finds first entity that matches given options.
    */
-  public findOneOrFail(options?: FindOnePlusOptions<Entity>): Promise<Entity>
+  public findOneOrFail(options?: FindOneOptions<Entity>): Promise<Entity>
 
   /**
    * Finds first entity that matches given conditions.
    */
   public findOneOrFail(
     conditions?: FindConditions<Entity>,
-    options?: FindOnePlusOptions<Entity>
+    options?: FindOneOptions<Entity>
   ): Promise<Entity>
 
   /**
@@ -326,13 +320,13 @@ export class RepositoryPlus<Entity extends ObjectLiteral> extends Repository<Ent
       | number
       | Date
       | ObjectID
-      | FindOnePlusOptions<Entity>
+      | FindOneOptions<Entity>
       | FindConditions<Entity>,
-    maybeOptions?: FindOnePlusOptions<Entity>
+    maybeOptions?: FindOneOptions<Entity>
   ): Promise<Entity> {
-    optionsOrConditions = this.addScope(optionsOrConditions as FindManyPlusOptions<Entity>)
+    optionsOrConditions = this.addScope(optionsOrConditions as FindManyOptions<Entity>)
     if (maybeOptions) {
-      optionsOrConditions = this.addScope(maybeOptions as FindOnePlusOptions<Entity>)
+      optionsOrConditions = this.addScope(maybeOptions as FindOneOptions<Entity>)
     }
     return this.manager.findOneOrFail(
       this.metadata.target as any,
@@ -342,7 +336,7 @@ export class RepositoryPlus<Entity extends ObjectLiteral> extends Repository<Ent
   }
 
   // 为条件参数添加限制条件
-  private addScope<T extends FindManyPlusOptions<Entity> | FindConditions<Entity>>(
+  private addScope<T extends FindManyOptions<Entity> | FindConditions<Entity>>(
     params: T & { scope?: string | boolean },
     options?: any
   ): T {
@@ -376,7 +370,7 @@ export class RepositoryPlus<Entity extends ObjectLiteral> extends Repository<Ent
       | DeepPartial<Entity>
       | QueryDeepPartialEntity<Entity>
       | (Array<QueryDeepPartialEntity<Entity>>)
-  >(entityOrEntities: T | T[], options: SavePlusOptions | undefined) {
+  >(entityOrEntities: T | T[], options: SaveOptions | undefined) {
     if (options && options.unique) {
       if (!Array.isArray(entityOrEntities)) {
         entityOrEntities = [entityOrEntities]

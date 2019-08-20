@@ -1,4 +1,4 @@
-import { SelectQueryBuilder, WhereExpression } from 'typeorm'
+import { ObjectType, SelectQueryBuilder, WhereExpression } from 'typeorm'
 
 /**
  * Allows to build complex sql queries in a fashion way and execute those queries.
@@ -44,5 +44,39 @@ export class SelectQueryBuilderPlus<Entity> extends SelectQueryBuilder<Entity>
       callback(this)
     }
     return this
+  }
+
+  /**
+   * Specifies FROM which entity's table select/update/delete will be executed.
+   * Also sets a main string alias of the selection data.
+   * Removes all previously set from-s.
+   */
+  public from<T>(
+    entityTarget: (qb: SelectQueryBuilderPlus<any>) => SelectQueryBuilderPlus<any>,
+    aliasName: string
+  ): SelectQueryBuilderPlus<T>
+
+  /**
+   * Specifies FROM which entity's table select/update/delete will be executed.
+   * Also sets a main string alias of the selection data.
+   * Removes all previously set from-s.
+   */
+  public from<T>(entityTarget: ObjectType<T> | string, aliasName: string): SelectQueryBuilderPlus<T>
+
+  /**
+   * Specifies FROM which entity's table select/update/delete will be executed.
+   * Also sets a main string alias of the selection data.
+   * Removes all previously set from-s.
+   */
+  public from<T>(
+    entityTarget:
+      | ObjectType<T>
+      | string
+      | ((qb: SelectQueryBuilderPlus<any>) => SelectQueryBuilderPlus<any>),
+    aliasName: string
+  ): SelectQueryBuilderPlus<T> {
+    const mainAlias = this.createFromAlias(entityTarget, aliasName)
+    this.expressionMap.setMainAlias(mainAlias)
+    return (this as any) as SelectQueryBuilderPlus<T>
   }
 }

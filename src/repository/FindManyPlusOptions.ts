@@ -18,5 +18,5 @@ export interface FindManyPlusOptions<Entity = any> extends FindManyOptions<Entit
    * Select scope apply to the reposity
    * If it is fasle, none of scope will be applied
    */
-  scope: boolean | string
+  scope?: boolean | string
 }
