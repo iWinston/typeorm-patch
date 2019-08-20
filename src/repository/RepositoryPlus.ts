@@ -1,14 +1,13 @@
 import {
-  DeepPartial,
   DeleteResult,
   FindConditions,
-  InsertResult,
   ObjectID,
   ObjectLiteral,
   QueryRunner,
   Repository,
   UpdateResult,
-} from 'typeorm-copy'
+} from 'typeorm'
+import { DeepPartial, InsertResult } from 'typeorm'
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity'
 import { SelectQueryBuilderPlus } from '../query-builder/SelectQueryBuilderPlus'
 import { FindManyPlusOptions } from './FindManyPlusOptions'

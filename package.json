@@ -24,8 +24,8 @@
   "scripts": {
     "lint": "tslint -p tsconfig.json -c tslint.json ./src/**/*.ts",
     "clean": "rm -rf ./dist",
-    "build": "yarn clean && tsc && copy",
-    "copy": "cp package.json dist/ && cp README.md"
+    "build": "yarn clean && tsc && yarn copy",
+    "copy": "cp package.json dist/ && cp README.md dist/"
   },
   "engines": {
     "node": ">=8.0.0"
@@ -47,5 +47,5 @@
   "homepage": "https://github.com/iWinston/typeorm-plus#readme",
   "peerDependencies": {
     "typeorm": ">= 0.2.8"
-  },
+  }
 }
