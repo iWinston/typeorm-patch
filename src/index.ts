@@ -1,9 +1,9 @@
-export { RepositoryPlus } from "./RepositoryPlus";
-export { FindManyPlusOptions } from "./FindManyPlusOptions";
-export { FindOnePlusOptions } from "./FindOnePlusOptions";
-export { RemovePlusOptions } from "./RemovePlusOptions";
-export { SavePlusOptions } from "./SavePlusOptions";
+export * from 'typeorm'
 
-export {
-  patchTypeORMRepositoryWithRepositoryPlus
-} from "./patch-typeorm-repository";
+export { RepositoryPlus } from './repository/RepositoryPlus'
+export { FindManyPlusOptions } from './repository/FindManyPlusOptions'
+export { FindOnePlusOptions } from './repository/FindOnePlusOptions'
+export { RemovePlusOptions } from './repository/RemovePlusOptions'
+export { SavePlusOptions } from './repository/SavePlusOptions'
+
+export { patchRepositoryAndQueryBuilder } from './patch-typeorm-repository'

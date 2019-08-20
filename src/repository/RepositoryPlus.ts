@@ -3,11 +3,13 @@ import {
   FindConditions,
   ObjectID,
   ObjectLiteral,
+  QueryRunner,
   Repository,
   UpdateResult,
 } from 'typeorm'
 import { DeepPartial, InsertResult } from 'typeorm'
 import { QueryDeepPartialEntity } from 'typeorm/query-builder/QueryPartialEntity'
+import { SelectQueryBuilderPlus } from '../query-builder/SelectQueryBuilderPlus'
 import { FindManyPlusOptions } from './FindManyPlusOptions'
 import { FindOnePlusOptions } from './FindOnePlusOptions'
 import { FindOptionsUtils } from './FindOptionsUtils'
@@ -15,6 +17,20 @@ import { RemovePlusOptions } from './RemovePlusOptions'
 import { SavePlusOptions } from './SavePlusOptions'
 
 export class RepositoryPlus<Entity extends ObjectLiteral> extends Repository<Entity> {
+  /**
+   * Creates a new query builder that can be used to build a sql query.
+   */
+  public createQueryBuilder(
+    alias?: string,
+    queryRunner?: QueryRunner
+  ): SelectQueryBuilderPlus<Entity> {
+    return this.manager.createQueryBuilder<Entity>(
+      this.metadata.target as any,
+      alias || this.metadata.targetName,
+      queryRunner || this.queryRunner
+    )
+  }
+
   /**
    * Saves all given entities in the database.
    * If entities do not exist in the database then inserts, otherwise updates.
