@@ -1,7 +1,7 @@
 {
   "name": "typeorm-plus",
   "private": false,
-  "version": "0.0.26",
+  "version": "0.0.28",
   "description": "Add extra features to TypeORM",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
